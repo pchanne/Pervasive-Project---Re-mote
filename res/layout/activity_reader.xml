@@ -20,7 +20,7 @@
 
     <Button
         android:id="@+id/buttonPrev"
-        android:layout_width="95dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/ReaderTextView"
         android:layout_alignParentBottom="true"
