@@ -6,6 +6,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -21,23 +22,39 @@ import 	java.lang.reflect.Field;
 
 public class BookReader extends Activity {
 	ListView bookList;
+	Context context;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_book_reader);
+		this.context = getApplicationContext();
 		bookList = (ListView)findViewById(R.id.booklistView);
 		populateBookList();
 		bookList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int position,
 					long id) {
-				// TODO Auto-generated method stub
-				// Book clicked index
-				int itemPosition  = position;
-				// Book name value
-				String  itemValue = (String) bookList.getItemAtPosition(position);
-			}
+				// Book name
+				String  fileName = (String) bookList.getItemAtPosition(position);
+				FileHandler.setFileName(fileName);
+				FileHandler.setContext(context);
+				final String fileContents = FileHandler.readFile(0);
 
+				Thread reader = new Thread(){
+					public void run(){
+						try{
+							Intent readerIntent = new Intent("com.example.pervasiveapp.Reader").putExtra("KEY_FileContent",fileContents);
+							startActivity(readerIntent);
+						}catch(Exception e){
+							
+						}
+						finally{
+							finish();
+						}
+					}
+				};
+				reader.start();
+			}
 		});
 	}
 
@@ -49,14 +66,13 @@ public class BookReader extends Activity {
 	}
 
 	public void populateBookList(){
-		Field[] fields = R.raw.class.getFields();
-		ArrayList<String> list = new ArrayList<String>();
+		final Field[] fields = R.raw.class.getFields();
+		final ArrayList<String> list = new ArrayList<String>();
 
 		for(Field f: fields){
 			list.add(f.getName());
 		}
-
-		BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , list);
+		final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , list);
 		bookList.setAdapter(bookListAdapter);
 
 	}

@@ -2,6 +2,7 @@ package com.example.pervasiveapp;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
 
@@ -12,7 +13,8 @@ public class Reader extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reader);
-		
+		String fileContents = getIntent().getStringExtra("KEY_FileContent");
+		Log.i("PervasiveApp", "File Contents: "+"\n"+fileContents);
 	}
 
 	@Override

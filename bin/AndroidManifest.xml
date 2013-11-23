@@ -25,6 +25,10 @@
         <activity
             android:name="com.example.pervasiveapp.Reader"
             android:label="@string/title_activity_reader" >
+            <intent-filter>
+                <action android:name="com.example.pervasiveapp.Reader" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.example.pervasiveapp.BookReader"

@@ -28,7 +28,7 @@ public class FileHandler {
 		FileHandler.context = context;
 	}
 	
-	public static String readFile(String fileName, int index){
+	public static String readFile(int index){
 		final InputStream inputStream;
 		final StringBuffer buffer = new StringBuffer();
 		String str;
@@ -47,7 +47,6 @@ public class FileHandler {
 		catch(Exception e){
 			e.getMessage();
 		}
-		Log.i("PervasiveApp", buffer.toString());
 		return buffer.toString();
 	}
 	
