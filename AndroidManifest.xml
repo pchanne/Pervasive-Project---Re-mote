@@ -23,17 +23,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.pervasiveapp.FileHandler"
-            android:label="@string/title_activity_file_handler" >
-            <intent-filter>
-                <action android:name="com.example.pervasiveapp.FileHandler" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.example.pervasiveapp.Reader"
             android:label="@string/title_activity_reader" >
+        </activity>
+        <activity
+            android:name="com.example.pervasiveapp.BookReader"
+            android:label="@string/title_activity_book_reader" >
+            <intent-filter>
+                <action android:name="com.example.pervasiveapp.BookReader" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

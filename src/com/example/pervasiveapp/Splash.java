@@ -15,7 +15,7 @@ public class Splash extends Activity {
 			public void run(){
 				try{
 					sleep(3000);
-					Intent fileHandlerIntent = new Intent("com.example.pervasiveapp.FileHandler");
+					Intent fileHandlerIntent = new Intent("com.example.pervasiveapp.BookReader");
 					startActivity(fileHandlerIntent);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

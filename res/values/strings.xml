@@ -7,5 +7,6 @@
     <string name="title_activity_file_handler">FileHandler</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_reader">Reader</string>
+    <string name="title_activity_book_reader">BookReader</string>
 
 </resources>
