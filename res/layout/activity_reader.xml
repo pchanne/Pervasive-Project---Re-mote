@@ -8,13 +8,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Reader" >
 
-
     <TextView
         android:id="@+id/ReaderTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="22dp"
-        android:layout_marginTop="155dp"
-        android:text="TextView" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:minLines="1"
+        android:maxLines="25"
+        android:textSize="24dp"/>
+
+    <Button
+        android:id="@+id/buttonPrev"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ReaderTextView"
+        android:layout_alignParentBottom="true"
+        android:text="Previous" />
+
+    <Button
+        android:id="@+id/buttonNext"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ReaderTextView"
+        android:layout_alignRight="@+id/ReaderTextView"
+        android:text="Next" />
 
 </RelativeLayout>

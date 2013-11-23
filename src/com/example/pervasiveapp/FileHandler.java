@@ -2,6 +2,7 @@ package com.example.pervasiveapp;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,6 +12,7 @@ import android.util.Log;
 public class FileHandler {
 	private static String fileName;
 	private static Context context;
+	private static int index;
 	
 	public static String getFileName() {
 		return fileName;
@@ -28,7 +30,7 @@ public class FileHandler {
 		FileHandler.context = context;
 	}
 	
-	public static String readFile(int index){
+	public static String readFile(){
 		final InputStream inputStream;
 		final StringBuffer buffer = new StringBuffer();
 		String str;
@@ -49,5 +51,5 @@ public class FileHandler {
 		}
 		return buffer.toString();
 	}
-	
+		
 }

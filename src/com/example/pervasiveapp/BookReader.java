@@ -38,7 +38,7 @@ public class BookReader extends Activity {
 				String  fileName = (String) bookList.getItemAtPosition(position);
 				FileHandler.setFileName(fileName);
 				FileHandler.setContext(context);
-				final String fileContents = FileHandler.readFile(0);
+				final String fileContents = FileHandler.readFile();
 
 				Thread reader = new Thread(){
 					public void run(){
@@ -81,8 +81,6 @@ public class BookReader extends Activity {
 
 		public BookListAdapter(Context context, int resource, List<String> objects) {
 			super(context, resource, objects);
-
-			// TODO Auto-generated constructor stub
 		}
 
 
