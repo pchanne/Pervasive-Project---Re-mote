@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:minLines="1"
-        android:maxLines="25"
+        android:maxLength="100000"
         android:textSize="24dp"/>
 
     <Button
