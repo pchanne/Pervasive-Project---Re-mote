@@ -46,8 +46,8 @@ public class BookReader extends Activity {
 					String  fileName = (String) bookList.getItemAtPosition(position);
 					FileHandler.setFileName(fileName);
 					FileHandler.setContext(context);
-					final String fileContents = FileHandler.readFile();
-	
+					FileHandler.setRandomfile();
+					final String fileContents = FileHandler.readForward();
 					Thread reader = new Thread(){
 						public void run(){
 							try{
@@ -66,6 +66,8 @@ public class BookReader extends Activity {
 			});
 		}else{
 			//show messagebox that storage is not accessible.
+			Utils.setContext(context);
+			Utils.showOKMessageBox("Storage not accessible!", "Please ensure that the app has permissions to access the external storage");
 		}
 	}
 

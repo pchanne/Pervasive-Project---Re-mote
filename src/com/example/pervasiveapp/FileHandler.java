@@ -56,22 +56,18 @@ public class FileHandler {
 
 	public static void setRandomfile() {
 		
-		String str = null;
-		final File file;
-		file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),fileName);
+		File file;
 		try {
-			randomfile = new RandomAccessFile(fileName, "rw");
+			file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),fileName);
+			randomfile = new RandomAccessFile(file, "rw");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	
-	public static String readFile(){
+	/*public static String readFile(){
 		/*final InputStream inputStream;
 		final StringBuffer buffer = new StringBuffer();
 		String str;
@@ -91,7 +87,7 @@ public class FileHandler {
 			e.getMessage();
 		}
 		return buffer.toString();
-	}*/
+	}
 		String str = null;
 		final File file;
 		file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),fileName);
@@ -99,7 +95,7 @@ public class FileHandler {
 			RandomAccessFile randomfile = new RandomAccessFile(file, "rw");
 			randomfile.seek(0);
 			str = randomfile.readLine();
-			randomfile.close();	
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,6 +105,15 @@ public class FileHandler {
 		}
 		
 		return str;
+	}*/
+	
+	public static void closeFile(RandomAccessFile file){
+		try {
+			file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	public static String readForward(){
@@ -124,7 +129,7 @@ public class FileHandler {
 				index++;
 			}
 			currentPageNumber++;
-			if(pageNumber.get(currentPageNumber)!=null){
+			if(pageNumber.get(currentPageNumber)==null){
 				pageNumber.add(currentPageNumber,index+1);
 			}
 			
@@ -150,7 +155,7 @@ public class FileHandler {
 				index++;
 			}
 			currentPageNumber++;
-			if(pageNumber.get(currentPageNumber)!=null){
+			if(pageNumber.get(currentPageNumber)==null){
 				pageNumber.add(currentPageNumber,index+1);
 			}
 			
