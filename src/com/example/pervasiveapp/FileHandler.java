@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -21,6 +22,9 @@ public class FileHandler {
 	private static RandomAccessFile randomfile;
 	private static ArrayList<Integer> pageNumber;
 	private static int currentPageNumber ;
+	private static long fileSize;
+	private static long currReadsize;
+	
 	public static String getFileName() {
 		return fileName;
 	}
@@ -50,8 +54,6 @@ public class FileHandler {
 	}
 	
 	public FileHandler(){
-		pageNumber = new ArrayList<Integer>();
-		pageNumber.add(0, 0);
 	}
 
 	public static void setRandomfile() {
@@ -60,7 +62,19 @@ public class FileHandler {
 		try {
 			file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),fileName);
 			randomfile = new RandomAccessFile(file, "rw");
+			
+			pageNumber = new ArrayList<Integer>();
+			pageNumber.add(0, 0);
+			index = 0;
+			currentPageNumber = 0;
+			fileSize = randomfile.length();
+			Log.i("PervasiveApp", "TotalSize: "+"\n"+fileSize);
+			currReadsize = 0;
+			
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -103,7 +117,7 @@ public class FileHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 && curr
 		return str;
 	}*/
 	
@@ -117,61 +131,91 @@ public class FileHandler {
 	}
 	
 	public static String readForward(){
-		String str;
-		String returnValue = null;
+		StringBuffer buff = new StringBuffer();
+		int sizeOfDataRead = 0;
+		
+		if(canReadAhead()){
+		try {
+			currentPageNumber++;
+			randomfile.seek(pageNumber.get(currentPageNumber));
+			while(sizeOfDataRead<=1000 && currReadsize < fileSize){
+				char c = (char)(randomfile.readByte());
+				buff.append(c);
+				sizeOfDataRead++;
+				index++;
+				currReadsize++;
+			}
+			pageNumber.add(currentPageNumber+1,index);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Log.i("PervasiveApp", "CurrentRead: "+"\n"+currReadsize);
+		Log.i("PervasiveApp", "Data: "+"\n"+buff.toString());
+		return buff.toString();
+		}else 
+		{
+			return null;
+		}
+		
+	}
+	
+	public static String read(){
+		StringBuffer buff = new StringBuffer();
+		
 		int sizeOfDataRead = 0;
 		try {
-			randomfile.seek(index);
-			while(sizeOfDataRead<=1000000){
-				str = String.valueOf(randomfile.readChar());
+			randomfile.seek(pageNumber.get(currentPageNumber));
+			while(sizeOfDataRead<=1000){
+				char c = (char)(randomfile.readByte());
+				buff.append(c);
 				sizeOfDataRead++;
-				returnValue+=str;
 				index++;
+				currReadsize++;
+				
 			}
-			currentPageNumber++;
-			if(pageNumber.get(currentPageNumber)==null){
-				pageNumber.add(currentPageNumber,index+1);
-			}
+			pageNumber.add(currentPageNumber+1,index);
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return returnValue;
-		
+		Log.i("PervasiveApp", "Data: "+"\n"+buff.toString());
+		return buff.toString();
 	}
 		
 	public static String readBackward(){
 		
-		String str;
-		String returnValue = null;
+		if(canReadBack()){
+		StringBuffer buff = new StringBuffer();
 		int sizeOfDataRead = 0;
 		try {
-			currentPageNumber --;
+			currentPageNumber--;
 			randomfile.seek(pageNumber.get(currentPageNumber));
-			while(sizeOfDataRead<=1000000){
-				str = String.valueOf(randomfile.readChar());
-				returnValue+=str;
+			while(sizeOfDataRead<=1000){
+				char c = (char)(randomfile.readByte());
+				buff.append(c);
+				sizeOfDataRead++;
 				index++;
+				currReadsize--;
+				
 			}
-			currentPageNumber++;
-			if(pageNumber.get(currentPageNumber)==null){
-				pageNumber.add(currentPageNumber,index+1);
-			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return returnValue;
+		return buff.toString();
+		}else{
+			return null;
+		}
 		
 	}
 	
-//	public static Boolean canReadBack(){
-//		
-//	}
-//	
-//	public static Boolean canReadAhead(){
-//		
-//	}
+	public static Boolean canReadBack(){
+		return currentPageNumber==0?false:true;
+	}
+	
+	public static Boolean canReadAhead(){
+		if(currReadsize < fileSize) return true;
+		else return false;
+	}
 }

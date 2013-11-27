@@ -7,9 +7,6 @@ import android.content.DialogInterface;
 public class Utils {
 	
 	private static Context context;
-	
-	
-	
 	public static Context getContext() {
 		return context;
 	}

@@ -47,14 +47,15 @@ public class BookReader extends Activity {
 					FileHandler.setFileName(fileName);
 					FileHandler.setContext(context);
 					FileHandler.setRandomfile();
-					final String fileContents = FileHandler.readForward();
+					final String fileContents = FileHandler.read();
 					Thread reader = new Thread(){
 						public void run(){
 							try{
 								Intent readerIntent = new Intent("com.example.pervasiveapp.Reader").putExtra("KEY_FileContent",fileContents);
 								startActivity(readerIntent);
 							}catch(Exception e){
-								
+								Utils.setContext(context);
+								Utils.showOKMessageBox("Exception in starting Reader", e.getMessage());
 							}
 							finally{
 								finish();
