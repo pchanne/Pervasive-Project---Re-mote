@@ -1,16 +1,12 @@
 package com.example.pervasiveapp;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Log;
 
@@ -24,7 +20,9 @@ public class FileHandler {
 	private static int currentPageNumber ;
 	private static long fileSize;
 	private static long currReadsize;
-	
+	private static int lastPageSize;
+    public static final int PAGE_SIZE = 1000;
+    
 	public static String getFileName() {
 		return fileName;
 	}
@@ -81,46 +79,6 @@ public class FileHandler {
 	}
 
 	
-	/*public static String readFile(){
-		/*final InputStream inputStream;
-		final StringBuffer buffer = new StringBuffer();
-		String str;
-		final BufferedReader reader;
-		try{
-			inputStream = context.getResources().openRawResource(context.getResources().getIdentifier("raw/"+fileName, "raw", context.getPackageName()));
-			reader = new BufferedReader(new InputStreamReader(inputStream));
-			if (inputStream!=null) {                         
-		        while ((str = reader.readLine()) != null) { 
-		        	buffer.append(str + "\n" );
-		        }               
-		    }       
-			inputStream.close(); 
-		}catch(Resources.NotFoundException re){
-		}
-		catch(Exception e){
-			e.getMessage();
-		}
-		return buffer.toString();
-	}
-		String str = null;
-		final File file;
-		file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),fileName);
-		try {
-			RandomAccessFile randomfile = new RandomAccessFile(file, "rw");
-			randomfile.seek(0);
-			str = randomfile.readLine();
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		 && curr
-		return str;
-	}*/
-	
 	public static void closeFile(RandomAccessFile file){
 		try {
 			file.close();
@@ -138,19 +96,22 @@ public class FileHandler {
 		try {
 			currentPageNumber++;
 			randomfile.seek(pageNumber.get(currentPageNumber));
-			while(sizeOfDataRead<=1000 && currReadsize < fileSize){
+			index = pageNumber.get(currentPageNumber);
+			while(sizeOfDataRead<=PAGE_SIZE && currReadsize < fileSize){
 				char c = (char)(randomfile.readByte());
 				buff.append(c);
 				sizeOfDataRead++;
 				index++;
 				currReadsize++;
 			}
+			if(currReadsize==fileSize){
+				lastPageSize = sizeOfDataRead;
+			}
 			pageNumber.add(currentPageNumber+1,index);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		Log.i("PervasiveApp", "CurrentRead: "+"\n"+currReadsize);
-		Log.i("PervasiveApp", "Data: "+"\n"+buff.toString());
 		return buff.toString();
 		}else 
 		{
@@ -164,8 +125,10 @@ public class FileHandler {
 		
 		int sizeOfDataRead = 0;
 		try {
+			
 			randomfile.seek(pageNumber.get(currentPageNumber));
-			while(sizeOfDataRead<=1000){
+			index = pageNumber.get(currentPageNumber);
+			while(sizeOfDataRead<=PAGE_SIZE){
 				char c = (char)(randomfile.readByte());
 				buff.append(c);
 				sizeOfDataRead++;
@@ -174,7 +137,6 @@ public class FileHandler {
 				
 			}
 			pageNumber.add(currentPageNumber+1,index);
-			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -191,18 +153,25 @@ public class FileHandler {
 		try {
 			currentPageNumber--;
 			randomfile.seek(pageNumber.get(currentPageNumber));
-			while(sizeOfDataRead<=1000){
+			index = pageNumber.get(currentPageNumber);
+			while(sizeOfDataRead<=PAGE_SIZE){
 				char c = (char)(randomfile.readByte());
 				buff.append(c);
 				sizeOfDataRead++;
 				index++;
-				currReadsize--;
-				
 			}
+			if(lastPageSize>0){
+				currReadsize = currReadsize - lastPageSize;
+				lastPageSize = 0;
+			}else
+			{
+				currReadsize = currReadsize-(PAGE_SIZE+1);
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		Log.i("PervasiveApp", "CurrentRead: "+"\n"+currReadsize);
 		return buff.toString();
 		}else{
 			return null;
