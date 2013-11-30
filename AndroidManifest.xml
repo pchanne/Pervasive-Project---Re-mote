@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
         <meta-data android:name="com.google.android.prediction.APP_ID" 
-            android:value="AIzaSyCSdo4GHYK72qa0Nl2Tq87GBDO1_n7Nf8I"/>
+            android:value="AIzaSyCQ6he622E8D9eJVdXSvb3rAF7f3r4ngww"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="4030500" />

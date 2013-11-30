@@ -121,7 +121,7 @@ public class BookReader extends Activity {
 			files = downloadsDir.list();
 			final ArrayList<String> fileList = new ArrayList<String>();
 					for(int i=0;i<files.length;i++){
-						
+						if(files[i].contains(".txt"))
 						fileList.add(files[i]);
 					}
 					final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , fileList);
@@ -214,6 +214,7 @@ public class BookReader extends Activity {
 
 	private static void predict(Prediction prediction, String text)
 			throws IOException {
+		Log.e("predict", "calling prediction service");
 		Input input = new Input();
 		InputInput inputInput = new InputInput();
 		inputInput.setCsvInstance(Collections.<Object> singletonList(text));
