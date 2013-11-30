@@ -17,6 +17,7 @@ public class Reader extends Activity {
 	Button previousButton;
 	Button nextButton;
 	String fileText;
+	MusicPlayer player;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,6 +28,11 @@ public class Reader extends Activity {
 			textReader = (TextView)findViewById(R.id.ReaderTextView);
 			if(textReader!=null){
 				textReader.setText(fileContents);
+				player = new MusicPlayer();
+				player.setContext(getApplicationContext());
+				player.setSongIndex(0);
+				player.doInBackground((Void[])null);
+				
 			}
 		}catch(Exception e){
 			 Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(), Toast.LENGTH_LONG)
@@ -86,5 +92,18 @@ public class Reader extends Activity {
 		});
  
 	}
-
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		player.getPlayer().pause();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		player.getPlayer().start();
+	}
 }

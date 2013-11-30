@@ -34,6 +34,7 @@ public class BookReader extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_book_reader);
 		this.context = getApplicationContext();
+		
 		bookList = (ListView)findViewById(R.id.booklistView);
 		checkExternalStorage();
 		if(mExternalStorageAvailable){
@@ -94,8 +95,8 @@ public class BookReader extends Activity {
 			files = downloadsDir.list();
 			final ArrayList<String> fileList = new ArrayList<String>();
 					for(int i=0;i<files.length;i++){
-						
-						fileList.add(files[i]);
+						if(files[i].contains(".txt"))
+							fileList.add(files[i]);
 					}
 					final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , fileList);
 					bookList.setAdapter(bookListAdapter);
