@@ -15,7 +15,7 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 	private File musicDir;
 	private File moodDirectory;
 	private static int songIndex;
-
+	File[] songs;
 
 	public static int getSongIndex() {
 		return songIndex;
@@ -49,29 +49,40 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 	@Override
 	protected Void doInBackground(Void... params) {
 
+		Uri filetoplay = null;
+		songs = moodDirectory.listFiles();
+		if(songs!=null && songs.length>0){
+			//choose a random song from the directory chosen
+			filetoplay = Uri.fromFile(songs[chooseRandomSong(songs.length)]);
+		}
+		player = MediaPlayer.create(context,filetoplay); 
+		player.setLooping(true); // Set looping 
+		player.setVolume(25, 25); 
+		player.start(); 
+		return null;
+	}
+	
+	private int chooseRandomSong(int maxIndex){
+		int chosenSongIndex = 0;
+		chosenSongIndex = (int)(Math.random() * maxIndex);
+		return chosenSongIndex;
+	}
+	
+	public void chooseRandomSong(){
+		chooseRandomSong(songs.length);
+	}
+	
+	public void setMoodDirectory(){
 		File [] filenames = musicDir.listFiles();
 		if(filenames!=null && filenames.length>0){
 			for(int i=0;i<filenames.length;i++){
+				//logic to get directory based on mood
 				if(filenames[i].isDirectory() && filenames[i].getName().equalsIgnoreCase("sad")){
 					moodDirectory =  filenames[i];
 					break;
 				}
 			}
 		}
-
-		File[] songs;
-
-		Uri filetoplay = null;
-		//logic to get directory based on mood
-		songs = moodDirectory.listFiles();
-		if(songs!=null && songs.length>0)
-			filetoplay = Uri.fromFile(songs[songIndex]);
-		player = MediaPlayer.create(context,filetoplay); 
-		player.setLooping(true); // Set looping 
-		player.setVolume(25, 25); 
-		player.start(); 
-
-		return null;
 	}
 
 

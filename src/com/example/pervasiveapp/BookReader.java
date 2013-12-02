@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.accounts.AccountManager;
@@ -20,6 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +52,7 @@ public class BookReader extends Activity {
 
 	static Prediction predictionService;
 	private GoogleAccountCredential credential;
-
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class BookReader extends Activity {
 		checkExternalStorage();
 		if(mExternalStorageAvailable){
 			populateBookList();
+			
 			bookList.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View view, int position,
@@ -88,10 +91,10 @@ public class BookReader extends Activity {
 					reader.start();
 				}
 			});
-			credential = GoogleAccountCredential.usingOAuth2(this,
-					Arrays.asList(PredictionScopes.PREDICTION));
-			startActivityForResult(credential.newChooseAccountIntent(),
-					REQUEST_ACCOUNT_PICKER);
+			//credential = GoogleAccountCredential.usingOAuth2(this,
+			//		Arrays.asList(PredictionScopes.PREDICTION));
+			//startActivityForResult(credential.newChooseAccountIntent(),
+			//		REQUEST_ACCOUNT_PICKER);
 		}else{
 			//show messagebox that storage is not accessible.
 			Utils.setContext(context);
@@ -107,14 +110,6 @@ public class BookReader extends Activity {
 	}
 
 	public void populateBookList(){
-//		final Field[] fields = R.raw.class.getFields();
-//		final ArrayList<String> list = new ArrayList<String>();
-//
-//		for(Field f: fields){
-//			list.add(f.getName());
-//		}
-//		final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , list);
-//		bookList.setAdapter(bookListAdapter);
 		File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		String [] files = new String[100];
 		if(downloadsDir!=null){
@@ -127,8 +122,6 @@ public class BookReader extends Activity {
 					final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , fileList);
 					bookList.setAdapter(bookListAdapter);
 		}
-		
-
 	}
 	
 	public void checkExternalStorage(){
@@ -224,6 +217,7 @@ public class BookReader extends Activity {
 		Log.e("Text: ", text);
 		Log.e("Predicted language: ", output.getOutputLabel().toString());
 	}
+	
 
 }
 
