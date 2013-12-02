@@ -174,6 +174,7 @@ public class Reader extends Activity {
             if(result[0]!=null){
             	if(result[0] == 1){
             		//@Todo: Code to change song
+            		//call player.chooseRandomSong
             	}
             }
         }
