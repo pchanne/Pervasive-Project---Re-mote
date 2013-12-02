@@ -50,6 +50,7 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 	protected Void doInBackground(Void... params) {
 
 		Uri filetoplay = null;
+		setMoodDirectory();
 		songs = moodDirectory.listFiles();
 		if(songs!=null && songs.length>0){
 			//choose a random song from the directory chosen

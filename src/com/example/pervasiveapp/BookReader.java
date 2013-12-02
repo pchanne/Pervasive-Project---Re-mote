@@ -91,10 +91,10 @@ public class BookReader extends Activity {
 					reader.start();
 				}
 			});
-			//credential = GoogleAccountCredential.usingOAuth2(this,
-			//		Arrays.asList(PredictionScopes.PREDICTION));
-			//startActivityForResult(credential.newChooseAccountIntent(),
-			//		REQUEST_ACCOUNT_PICKER);
+			credential = GoogleAccountCredential.usingOAuth2(this,
+					Arrays.asList(PredictionScopes.PREDICTION));
+			startActivityForResult(credential.newChooseAccountIntent(),
+					REQUEST_ACCOUNT_PICKER);
 		}else{
 			//show messagebox that storage is not accessible.
 			Utils.setContext(context);

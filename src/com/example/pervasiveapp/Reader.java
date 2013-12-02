@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +63,15 @@ public class Reader extends Activity {
 
 		                Ard_data1 = data[0];
 		                Ard_data2 = data[1];
-		                new UpdateData().execute(Ard_data1,Ard_data2);
+		                
+		                runOnUiThread(new Runnable() {
+		                    //@Override
+		                    public void run() {
+		                        new UpdateData().execute(Ard_data1,Ard_data2);
+		                    }
+		                });
+		                
+		                //new UpdateData().execute(Ard_data1,Ard_data2);
 		            }
 		        });     
 			}
@@ -139,6 +148,13 @@ public class Reader extends Activity {
 		player.getPlayer().start();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		player.getPlayer().stop();
+		server.stop();
+	}
+	
 	private void createTCPServer(){
 		try
 	      {
@@ -170,13 +186,21 @@ public class Reader extends Activity {
         }
         
         @Override
-        protected void onPostExecute(Integer... result) {      	
+        protected void onPostExecute(Integer... result) {
+        	
             if(result[0]!=null){
-            	if(result[0] == 1){
+            	if(result[0] == 0){
             		//@Todo: Code to change song
-            		//call player.chooseRandomSong
+            		Reader.this.player.getPlayer().stop();
+            		Reader.this.player.setPlayer(null);
+            		Reader.this.player.doInBackground((Void [])null);
             	}
             }
+            
+//            TextView txt = (TextView) Reader.this.textReader;
+//            String newText = String.valueOf(result[0]) +"*****"+ Reader.this.textReader.getText();
+//            txt.setText(newText);    // Print a random number from Arduino to activity
+            
         }
     }
 
