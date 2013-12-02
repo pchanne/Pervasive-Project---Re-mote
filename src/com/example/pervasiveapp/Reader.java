@@ -1,5 +1,8 @@
 package com.example.pervasiveapp;
 
+import java.io.IOException;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -17,7 +20,16 @@ public class Reader extends Activity {
 	Button previousButton;
 	Button nextButton;
 	String fileText;
-	MusicPlayer player;
+	public MusicPlayer player;
+	
+	/*----------ARDUINO SPECIFIC MEMBERS ------
+	 ------------------------------------------
+	 */
+	
+   private int Ard_data1 = 0;
+   private int Ard_data2 = 0;
+   Server server = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,9 +42,29 @@ public class Reader extends Activity {
 				textReader.setText(fileContents);
 				player = new MusicPlayer();
 				player.setContext(getApplicationContext());
-				player.setSongIndex(0);
+				
+				//@TODO: send text to prediction algo, and set mood in the MusicPlayer class;
 				player.doInBackground((Void[])null);
 				
+			}
+			
+			//start tcp server to accept data from arduino button
+			createTCPServer();
+			
+			if(server!=null){
+				server.addListener(new AbstractServerListener() {
+
+		            @Override
+		            public void onReceive(Client client, byte[] data)
+		            {
+		                Log.d("PervasiveApp", "data0:"+data[0]+"; data1:"+data[1]);
+		                if (data.length<2) Log.e("PervasiveApp", "The data less than 2 bytes:"+data.length);
+
+		                Ard_data1 = data[0];
+		                Ard_data2 = data[1];
+		                new UpdateData().execute(Ard_data1,Ard_data2);
+		            }
+		        });     
 			}
 		}catch(Exception e){
 			 Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(), Toast.LENGTH_LONG)
@@ -106,4 +138,45 @@ public class Reader extends Activity {
 		super.onResume();
 		player.getPlayer().start();
 	}
+	
+	private void createTCPServer(){
+		try
+	      {
+	          server = new Server(4568); //Port
+	          server.start();            
+	      } catch (IOException e)
+	      {
+	          Log.e("PervasiveApp", "Unable to start TCP server", e);
+	          System.exit(-1);
+	      }
+	}
+	
+	/*----------------------------------------------
+	 * HELPER TYPES
+	 -----------------------------------------------*/
+	
+	class UpdateData extends AsyncTask<Integer, Integer, Integer[]> {
+		
+		// Called to initiate the background activity
+        @Override
+        protected Integer[] doInBackground(Integer... ArdState) {
+            return (ArdState);  //Return to onPostExecute()
+        }
+        
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            // Not used in this case
+        }
+        
+        @Override
+        protected void onPostExecute(Integer... result) {      	
+            if(result[0]!=null){
+            	if(result[0] == 1){
+            		//@Todo: Code to change song
+            	}
+            }
+        }
+    }
+
 }
