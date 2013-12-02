@@ -15,7 +15,6 @@ compiled source #
 *.dmg
 *.gz
 *.iso
-*.jar
 *.rar
 *.tar
 *.zip
