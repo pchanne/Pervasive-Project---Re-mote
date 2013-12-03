@@ -2,9 +2,12 @@ package com.example.pervasiveapp;
 
 import java.io.IOException;
 
+import com.example.prediction.PredictionHandler;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -41,13 +44,21 @@ public class Reader extends Activity {
 			textReader = (TextView)findViewById(R.id.ReaderTextView);
 			if(textReader!=null){
 				textReader.setText(fileContents);
+				String mood= null;
+				mood = PredictionHandler.getInstance().predict(fileContents);
 				player = new MusicPlayer();
 				player.setContext(getApplicationContext());
+				if(mood!=null && !mood.equalsIgnoreCase("neutral")){
+						player.setMood(mood);
+						player.doInBackground((Void[])null);
+				}
+					
+					
+			}
 				
 				//@TODO: send text to prediction algo, and set mood in the MusicPlayer class;
-				player.doInBackground((Void[])null);
 				
-			}
+				
 			
 			//start tcp server to accept data from arduino button
 			createTCPServer();
@@ -94,6 +105,19 @@ public class Reader extends Activity {
 			public void onClick(View v) {
 				fileText = FileHandler.readForward();
 				if(fileText!=null){
+					String mood = PredictionHandler.getInstance().predict(fileText);
+					if(mood!=null && !mood.equalsIgnoreCase("neutral")){
+						if(player.getMood()!=null && !player.getMood().equalsIgnoreCase(mood)){
+							if(player!=null){
+								player.getPlayer().stop();
+								player.getPlayer().release();
+								player.setMood(mood);
+							}else{
+								player.setMood(mood);
+							}
+							player.doInBackground((Void[])null);
+						}
+					}
 					textReader.setText(fileText);
 				}else{
 					Utils.setContext(Reader.this);
@@ -123,6 +147,19 @@ public class Reader extends Activity {
 			public void onClick(View arg0) {
 				fileText = FileHandler.readBackward();
 				if(fileText!=null){
+					String mood = PredictionHandler.getInstance().predict(fileText);
+					if(mood!=null && !mood.equalsIgnoreCase("neutral")){
+						if(player.getMood()!=null && !player.getMood().equalsIgnoreCase(mood)){
+							if(player!=null){
+								player.getPlayer().stop();
+								player.getPlayer().release();
+								player.setMood(mood);
+							}else{
+								player.setMood(mood);
+							}
+							player.doInBackground((Void[])null);
+						}
+					}
 					textReader.setText(fileText);
 				}else{
 					Utils.setContext(Reader.this);
@@ -152,6 +189,7 @@ public class Reader extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		player.getPlayer().stop();
+		player.getPlayer().release();
 		server.stop();
 	}
 	
@@ -165,6 +203,28 @@ public class Reader extends Activity {
 	          Log.e("PervasiveApp", "Unable to start TCP server", e);
 	          System.exit(-1);
 	      }
+	}
+	
+	@Override
+	public void onBackPressed() {
+	
+		Thread bookReader = new Thread(){
+			public void run(){
+				try{
+					Intent bookReaderIntent = new Intent("com.example.pervasiveapp.BookReader");
+					startActivity(bookReaderIntent);
+				}catch(Exception e){
+					Utils.setContext(getApplicationContext());
+					Utils.showOKMessageBox("Exception in starting BookReader", e.getMessage());
+				}
+				finally{
+					finish();
+				}
+			}
+		};
+		bookReader.start();
+		
+		return;
 	}
 	
 	/*----------------------------------------------

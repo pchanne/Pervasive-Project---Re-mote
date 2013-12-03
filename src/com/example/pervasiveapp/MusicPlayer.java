@@ -16,6 +16,15 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 	private File moodDirectory;
 	private static int songIndex;
 	File[] songs;
+	private static String mood;
+	
+	public static String getMood() {
+		return mood;
+	}
+
+	public static void setMood(String mood) {
+		MusicPlayer.mood = mood;
+	}
 
 	public static int getSongIndex() {
 		return songIndex;
@@ -41,7 +50,7 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 	public void setPlayer(MediaPlayer player) {
 		this.player = player;
 	}
-
+	
 
 	public MusicPlayer(){
 		musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
@@ -78,7 +87,7 @@ public class MusicPlayer extends AsyncTask<Void, Void, Void>  {
 		if(filenames!=null && filenames.length>0){
 			for(int i=0;i<filenames.length;i++){
 				//logic to get directory based on mood
-				if(filenames[i].isDirectory() && filenames[i].getName().equalsIgnoreCase("sad")){
+				if(filenames[i].isDirectory() && filenames[i].getName().equalsIgnoreCase(mood)){
 					moodDirectory =  filenames[i];
 					break;
 				}

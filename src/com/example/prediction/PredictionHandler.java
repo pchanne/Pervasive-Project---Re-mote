@@ -28,9 +28,9 @@ public class PredictionHandler {
 				.split(" ")));
 		NRCLexiconToMapParser nrcLexiconToMapParser = NRCLexiconToMapParser
 				.getInstance();
-		StanfordLemmatizer stanfordLemmatizer = StanfordLemmatizer.getInstance();
+		//StanfordLemmatizer stanfordLemmatizer = StanfordLemmatizer.getInstance();
 		for (String token : tokens) {
-			token = stanfordLemmatizer.lemmatize(token).get(0);
+			//token = stanfordLemmatizer.lemmatize(token).get(0);
 			if (nrcLexiconToMapParser.getWordToEmotionsMap().containsKey(token)) {
 				List<String> emotions = nrcLexiconToMapParser
 						.getWordToEmotionsMap().get(token);
