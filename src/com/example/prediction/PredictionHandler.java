@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PredictionHandler {
 	
-	private List<String> positiveEmotions = new ArrayList<String>(Arrays.asList("joy", "trust", "anticipation"));
-	private List<String> negativeEmotions = new ArrayList<String>(Arrays.asList("anger", "disgust", "fear", "sadness"));
+	private List<String> positiveEmotions = new ArrayList<String>(Arrays.asList("joy", "anticipation"));
+	private List<String> negativeEmotions = new ArrayList<String>(Arrays.asList("anger", "fear", "sadness"));
 	private static PredictionHandler predictionHandler;
 	
 	private PredictionHandler () {}
@@ -23,14 +24,15 @@ public class PredictionHandler {
 
 	public String predict(String text) {
 		Map<String, Integer> emotionalAtyachar;
-		emotionalAtyachar = new HashMap<String, Integer>();
+		emotionalAtyachar = new ConcurrentHashMap<String, Integer>();
 		List<String> tokens = new ArrayList<String>(Arrays.asList(text
 				.split(" ")));
 		NRCLexiconToMapParser nrcLexiconToMapParser = NRCLexiconToMapParser
 				.getInstance();
-		//StanfordLemmatizer stanfordLemmatizer = StanfordLemmatizer.getInstance();
+//		Stemmer s = new Stemmer();
 		for (String token : tokens) {
-			//token = stanfordLemmatizer.lemmatize(token).get(0);
+//			token = s.stem(token);
+			System.out.println(token);
 			if (nrcLexiconToMapParser.getWordToEmotionsMap().containsKey(token)) {
 				List<String> emotions = nrcLexiconToMapParser
 						.getWordToEmotionsMap().get(token);
@@ -62,17 +64,40 @@ public class PredictionHandler {
 
 		int positive = 0;
 		int negative = 0;
-
 		for (String emotion : emotionalAtyachar.keySet()) {
 			if (emotion.equals("surprise")) {
+//				positive += emotionalAtyachar.get(emotion);
+				int count = 0;
+				if (emotionalAtyachar.containsKey("anticipation")) 
+					count = emotionalAtyachar.get("anticipation");
+				emotionalAtyachar.put("anticipation", count + emotionalAtyachar.get("surprise"));
+				
+			} else if (emotion.equals("joy") || emotion.equals("trust") || emotion.equals("anticipation")) {
 				positive += emotionalAtyachar.get(emotion);
-				negative += emotionalAtyachar.get(emotion);
-			} else if (emotion.equals("joy") || emotion.equals("trust")) {
-				positive += emotionalAtyachar.get(emotion);
+				if (emotion.equals("trust")){
+					int count = 0;
+					if (emotionalAtyachar.containsKey("joy"))
+					count = emotionalAtyachar.get("joy");
+					emotionalAtyachar.put("joy", count + emotionalAtyachar.get("trust"));
+				}
 			} else {
-				negative += emotionalAtyachar.get(emotion);
+				if (emotion.equals("disgust")) {
+					int count = 0;
+					if (emotionalAtyachar.containsKey("anger"))
+						count = emotionalAtyachar.get("anger");
+					emotionalAtyachar.put("anger", count + emotionalAtyachar.get(emotion));
+					
+				}
+				else negative += emotionalAtyachar.get(emotion);
+				
 			}
 		}
+		
+		if (emotionalAtyachar.containsKey("disgust")) emotionalAtyachar.remove("disgust");
+		if (emotionalAtyachar.containsKey("trust")) emotionalAtyachar.remove("trust");
+		if (emotionalAtyachar.containsKey("surprise")) emotionalAtyachar.remove("surprise");
+		
+		
 		System.out.println(positive);
 		System.out.println(negative);
 		if (positive > negative) {

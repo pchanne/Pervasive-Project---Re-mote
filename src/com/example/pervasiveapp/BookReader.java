@@ -65,7 +65,8 @@ public class BookReader extends Activity {
 						long id) {
 					// Book name
 					String  fileName = (String) bookList.getItemAtPosition(position);
-					FileHandler.setFileName(fileName);
+					Reader.setBookName(fileName);
+					FileHandler.setFileName(fileName+".txt");
 					FileHandler.setContext(context);
 					FileHandler.setRandomfile();
 					final String fileContents = FileHandler.read();
@@ -110,7 +111,7 @@ public class BookReader extends Activity {
 			final ArrayList<String> fileList = new ArrayList<String>();
 					for(int i=0;i<files.length;i++){
 						if(files[i].contains(".txt"))
-						fileList.add(files[i]);
+						fileList.add(files[i].replace(".txt", ""));
 					}
 					final BookListAdapter bookListAdapter = new BookListAdapter(this,android.R.layout.simple_list_item_1 , fileList);
 					bookList.setAdapter(bookListAdapter);

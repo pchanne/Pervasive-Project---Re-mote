@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,12 +26,24 @@ public class Reader extends Activity {
 	Button nextButton;
 	String fileText;
 	public MusicPlayer player;
+	private static String bookName;
+	private ProgressBar progressBar;
+	
+	
+   public static String getBookName() {
+		return bookName;
+	}
+
+	public static void setBookName(String bookName) {
+		Reader.bookName = bookName;
+	}
 	
 	/*----------ARDUINO SPECIFIC MEMBERS ------
 	 ------------------------------------------
 	 */
-	
-   private int Ard_data1 = 0;
+
+
+private int Ard_data1 = 0;
    private int Ard_data2 = 0;
    Server server = null;
 	
@@ -39,9 +52,12 @@ public class Reader extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reader);
 		try{
+			progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+			
 			String fileContents = getIntent().getStringExtra("KEY_FileContent");
 			Log.i("PervasiveApp", "File Contents: "+"\n"+fileContents);
 			textReader = (TextView)findViewById(R.id.ReaderTextView);
+			setTitle(bookName);
 			if(textReader!=null){
 				textReader.setText(fileContents);
 				String mood= null;
@@ -49,6 +65,7 @@ public class Reader extends Activity {
 				player = new MusicPlayer();
 				player.setContext(getApplicationContext());
 				if(mood!=null && !mood.equalsIgnoreCase("neutral")){
+						setProgressBar(mood);
 						player.setMood(mood);
 						player.doInBackground((Void[])null);
 				}
@@ -112,8 +129,10 @@ public class Reader extends Activity {
 								player.getPlayer().stop();
 								player.getPlayer().release();
 								player.setMood(mood);
+								setProgressBar(mood);
 							}else{
 								player.setMood(mood);
+								setProgressBar(mood);
 							}
 							player.doInBackground((Void[])null);
 						}
@@ -154,8 +173,10 @@ public class Reader extends Activity {
 								player.getPlayer().stop();
 								player.getPlayer().release();
 								player.setMood(mood);
+								setProgressBar(mood);
 							}else{
 								player.setMood(mood);
+								setProgressBar(mood);
 							}
 							player.doInBackground((Void[])null);
 						}
@@ -263,5 +284,19 @@ public class Reader extends Activity {
             
         }
     }
+	
+	private void setProgressBar(String mood) {
+		if (mood.equalsIgnoreCase("joy")) {
+			progressBar.setProgressDrawable(getResources().getDrawable(R.xml.progress_green));
+		} else if (mood.equalsIgnoreCase("anger")) {
+			progressBar.setProgressDrawable(getResources().getDrawable(R.xml.progress_red));
+		} else if (mood.equalsIgnoreCase("anticipation")) {
+			progressBar.setProgressDrawable(getResources().getDrawable(R.xml.progress_black));
+		} else if (mood.equalsIgnoreCase("sadness")) {
+			progressBar.setProgressDrawable(getResources().getDrawable(R.xml.progress_blue));
+		} else if (mood.equalsIgnoreCase("fear")) {
+			progressBar.setProgressDrawable(getResources().getDrawable(R.xml.progress_yellow));
+		}
+	}
 
 }
