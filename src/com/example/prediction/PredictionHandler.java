@@ -32,7 +32,8 @@ public class PredictionHandler {
 //		Stemmer s = new Stemmer();
 		for (String token : tokens) {
 //			token = s.stem(token);
-			System.out.println(token);
+//			System.out.println(token);
+			token = strip(token);
 			if (nrcLexiconToMapParser.getWordToEmotionsMap().containsKey(token)) {
 				List<String> emotions = nrcLexiconToMapParser
 						.getWordToEmotionsMap().get(token);
@@ -129,4 +130,9 @@ public class PredictionHandler {
 		return maximumEmotion;
 	}
 
+	private String strip (String word) {
+		word.endsWith("ed") {
+			
+		}
+	}
 }
